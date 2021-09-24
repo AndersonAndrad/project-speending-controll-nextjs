@@ -1,9 +1,10 @@
 import { IoIosArrowDropdown, IoIosArrowDropup, IoIosTrendingUp, IoMdCreate, IoMdDownload, IoMdTrash } from 'react-icons/io'
+import { formatCash, formatDate } from '../utils/formatCash.utils'
 import { useEffect, useState } from 'react'
 
-import { BackendApi } from '../services/api.serviecs'
+import { BackendApi } from '../services/api.services'
 import dynamic from 'next/dynamic'
-import faker from 'faker'
+import { exportFile } from '../utils/exportFile.utils'
 import { options } from '../config/graph.config'
 import styles from '../styles/Home.module.scss'
 
@@ -16,9 +17,10 @@ type Expense = {
   category: string
   amount: string
   installments: number
-  type: string
+  typeMoney: string
   initialDate: string
   finalDate: string
+  typeTransaction: string
 }
 
 type ResponseExpenseAxios = {
@@ -41,9 +43,6 @@ type GraphMoney = {
 export default function Home () {
   const [expenses, setExpenses] = useState<Expense[]>( [] )
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
-  const [without, setWithout] = useState<number>( faker.random.number( 10000 ) )
-  const [input, setInput] = useState<number>( faker.random.number( 10000 ) )
-  const [allMoney, setAllMoney] = useState<number>( without + input )
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -61,24 +60,42 @@ export default function Home () {
       const { expenses } = data
 
       const expensesFormatted = expenses.map( ( expense: Expense ) => {
-        const { id, title, description, category, amount, installments, type, initialDate, finalDate } = expense
+        const { id, title, description, category, amount, installments, typeTransaction, initialDate, finalDate, typeMoney } = expense
 
         return {
           id,
           title,
           description,
           category,
-          amount: String( new Intl.NumberFormat( 'pt-BR', { style: 'currency', currency: 'BRL' } ).format( Number( amount ) ) ),
+          amount,
           installments,
-          type,
-          initialDate: new Date( initialDate ).toLocaleDateString( 'eng-US', { day: '2-digit', month: 'short', } ),
-          finalDate: new Date( finalDate ).toLocaleDateString( 'eng-US', { day: '2-digit', month: 'short', } ),
+          typeTransaction,
+          initialDate: formatDate( initialDate ),
+          finalDate: formatDate( finalDate ),
+          typeMoney
         }
       } )
 
       setExpenses( expensesFormatted )
     } )
   }, [] )
+
+
+  const summary = expenses.reduce( ( acc, curr ) => {
+    if ( curr.typeMoney === 'income' ) {
+      acc.deposits += Number( curr.amount )
+      acc.all += Number( curr.amount )
+    } else {
+      acc.withdrawals += Number( curr.amount )
+      acc.all += Number( curr.amount )
+    }
+
+    return acc
+  }, {
+    deposits: 0,
+    withdrawals: 0,
+    all: 0
+  } )
 
   return (
     <div className={styles.container}>
@@ -87,10 +104,10 @@ export default function Home () {
           <div className={styles.leftHeaderContent}>
             <h1>Money</h1>
             <section className={styles.money}>
-              <h2><IoIosTrendingUp size={'24px'} /> {allMoney}</h2>
+              <h2><IoIosTrendingUp size={'24px'} /> {formatCash( summary.all )}</h2>
               <div>
-                <h3 className={styles.without}> <IoIosArrowDropdown size={'24px'} /> {input}</h3>
-                <h3 className={styles.input}> <IoIosArrowDropup size={'24px'} /> {without}</h3>
+                <h3 className={styles.without}> <IoIosArrowDropdown size={'24px'} /> {formatCash( summary.deposits )}</h3>
+                <h3 className={styles.input}> <IoIosArrowDropup size={'24px'} /> {formatCash( summary.withdrawals )}</h3>
 
               </div>
             </section>
@@ -115,7 +132,7 @@ export default function Home () {
                   <option value="">PDF</option>
                   <option value="">PDF</option>
                 </select>
-                <button><IoMdDownload size={'24px'} /></button>
+                <button><IoMdDownload size={'24px'} onClick={() => exportFile( { data: expenses, fileName: 'expenses', exportType: 'json' } )} /></button>
               </div>
             </label>
           </div>
@@ -155,9 +172,9 @@ export default function Home () {
                   <td>{expense.title}</td>
                   <td>{expense.description}</td>
                   <td>{expense.category}</td>
-                  <td>{expense.amount}</td>
+                  {expense.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( expense.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( expense.amount ) )}</td>}
                   <td>{expense.installments}</td>
-                  <td>{expense.type}</td>
+                  <td>{expense.typeTransaction}</td>
                   <td>
                     <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
                     <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>

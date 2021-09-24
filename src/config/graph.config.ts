@@ -1,3 +1,5 @@
+import { formatCash } from './../utils/formatCash.utils'
+
 export const options = {
   chart: {
     toolbar: { show: false },
@@ -6,17 +8,31 @@ export const options = {
     height: 350,
   },
   legend: {
-    position: 'top',
-    horizontalAlign: 'left'
+    position: "top",
+    horizontalAlign: "left"
   },
   grid: { show: false, },
   dataLabels: { enabled: false },
-  tooltip: { enabled: false },
-  stroke: { curve: 'smooth' },
-  xaxis: {
-    type: '',
+  tooltip: {
+    enabled: true,
+    theme: true,
+    fillSeriesColor: true,
+    style: {
+      fontSize: '0.8rem',
+      fontFamily: undefined
+    },
+    x: {
+      show: false,
+    },
+    y: {
+      show: true,
+      formatter: ( value, { series, seriesIndex, dataPointIndex, w } ) => {
+        return formatCash( value )
+      }
+    }
   },
-  yaxis: {},
+  stroke: { curve: 'smooth' },
+  xaxis: {},
   fill: {
     type: 'gradient'
   },

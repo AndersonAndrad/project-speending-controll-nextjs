@@ -9,9 +9,10 @@ type Expense = {
   category: string
   amount: number
   installments: number
-  type: string
+  typeMoney: string
   initialDate: string
   finalDate: string
+  typeTransaction: string
 }
 
 type Money = {
@@ -39,12 +40,12 @@ export function makeServer () {
           return faker.commerce.department()
         },
         amount () {
-          return faker.random.number( 2 )
+          return faker.random.number( 10000 )
         },
         installments () {
           return faker.random.number( 2 )
         },
-        type () {
+        typeTransaction () {
           return faker.random.arrayElement( ['credit', 'debit', 'pix'] )
         },
         initialDate () {
@@ -52,6 +53,9 @@ export function makeServer () {
         },
         finalDate () {
           return faker.date.future().toISOString()
+        },
+        typeMoney () {
+          return faker.random.arrayElement( ['income', 'outcome'] )
         }
       } ),
       money: Factory.extend( {
@@ -60,18 +64,18 @@ export function makeServer () {
         },
         data () {
           return [
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 ),
-            faker.random.number( 10000 )
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 ),
+            faker.random.number( 1000000 )
           ]
         },
       } )

@@ -1344,6 +1344,11 @@ exenv@^1.2.0:
   resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.2.tgz#2ae78e85d9894158670b03d47bec1f03bd91bb9d"
   integrity sha1-KueOhdmJQVhnCwPUe+wfA72Ru50=
 
+export-from-json@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/export-from-json/-/export-from-json-1.4.0.tgz#b2131045368f3d33b548d91f72518a57719713ef"
+  integrity sha512-YxgwKkaWU6Ox18AqicgZJ7aB9twSo9KAxraoXcoecxaw68W8npO0LGjbQPQDCY8dCZDD+zj3Es6thA0o4U5QMg==
+
 fake-xml-http-request@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/fake-xml-http-request/-/fake-xml-http-request-2.1.2.tgz#f1786720cae50bbb46273035a0173414f3e85e74"
