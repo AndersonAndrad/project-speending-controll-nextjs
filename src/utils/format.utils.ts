@@ -5,3 +5,7 @@ export function formatCash ( cash: number ): string {
 export function formatDate ( date: string ): string {
   return new Date( date ).toLocaleDateString( 'eng-US', { day: '2-digit', month: 'short', } )
 }
+
+export function getMonth ( date: string ): string {
+  return new Date( date ).toLocaleDateString( 'eng-US', { month: 'long' } )
+}

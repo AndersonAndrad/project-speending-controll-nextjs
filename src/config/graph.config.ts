@@ -1,4 +1,4 @@
-import { formatCash } from './../utils/formatCash.utils'
+import { formatCash } from '../utils/format.utils'
 
 export const options = {
   chart: {

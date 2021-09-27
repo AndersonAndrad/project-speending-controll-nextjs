@@ -1,7 +1,7 @@
 import { IoIosArrowDropdown, IoIosArrowDropup, IoIosTrendingUp } from 'react-icons/io'
 
 import dynamic from 'next/dynamic'
-import { formatCash } from '../../utils/formatCash.utils'
+import { formatCash } from '../../utils/format.utils'
 import { options } from '../../config/graph.config'
 import styles from './styles.module.scss'
 import { useTransactions } from '../../context/transaction.context'
@@ -43,10 +43,10 @@ export function Header ( { series }: HeaderProps ) {
         <div className={styles.leftHeaderContent}>
           <h1>Money</h1>
           <section className={styles.money}>
-            <h2><IoIosTrendingUp size={'24px'} /> {formatCash( summary.all )}</h2>
+            <h2><IoIosTrendingUp size={'24px'} /> {formatCash( summary.all )} ({new Date().getFullYear()}) </h2>
             <div>
-              <h3 className={styles.income}> <IoIosArrowDropdown size={'24px'} /> {formatCash( summary.deposits )}</h3>
-              <h3 className={styles.outcome}> <IoIosArrowDropup size={'24px'} /> {formatCash( summary.withdrawals )}</h3>
+              <h3 className={styles.outcome}> <IoIosArrowDropdown size={'24px'} /> {formatCash( summary.withdrawals )}</h3>
+              <h3 className={styles.income}> <IoIosArrowDropup size={'24px'} /> {formatCash( summary.deposits )}</h3>
             </div>
           </section>
         </div>

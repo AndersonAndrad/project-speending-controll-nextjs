@@ -1,9 +1,9 @@
 import { IoMdCreate, IoMdTrash } from 'react-icons/io'
+import { formatCash, formatDate } from '../utils/format.utils'
 import { useEffect, useState } from 'react'
 
 import { BackendApi } from '../services/api.services'
 import { Header } from '../components/Header'
-import { formatCash } from '../utils/formatCash.utils'
 import styles from '../styles/Home.module.scss'
 import { useTransactions } from '../context/transaction.context'
 
@@ -15,7 +15,7 @@ type Transaction = {
   amount: string
   installments: number
   typeMoney: string
-  initialDate: string
+  createdAt: string
   finalDate: string
   typeTransaction: string
 }
@@ -34,7 +34,7 @@ type GraphMoney = {
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
 
-  const { transactions } = useTransactions()
+  const { transactionsFormattedPerMonth } = useTransactions()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -44,6 +44,8 @@ export default function Home () {
       setGraphMoney( money )
     } )
   }, [] )
+
+  console.log( transactionsFormattedPerMonth )
 
   return (
     <div className={styles.container}>
@@ -57,44 +59,50 @@ export default function Home () {
           <li><button>2024</button></li>
           <li><button>2025</button></li>
         </ul>
-
-        <h1>October 2021</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Initial date</th>
-              <th>Final date</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Value</th>
-              <th>Installments</th>
-              <th>Type</th>
-              <th>Actions </th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map( ( transaction: Transaction ) => {
-              return (
-                <tr key={transaction.id}>
-                  <td>{transaction.initialDate}</td>
-                  <td>{transaction.finalDate}</td>
-                  <td>{transaction.title}</td>
-                  <td>{transaction.description}</td>
-                  <td>{transaction.category}</td>
-                  {transaction.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
-                  <td>{transaction.installments}</td>
-                  <td>{transaction.typeTransaction}</td>
-                  <td>
-                    <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
-                    <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
-                  </td>
-                </tr>
-              )
-            } )}
-
-          </tbody>
-        </table>
+        {transactionsFormattedPerMonth.map( transaction => {
+          return (
+            <>
+              <h1>{transaction.month}</h1>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Created</th>
+                    <th>Final date</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Value</th>
+                    <th>Installments</th>
+                    <th>Type</th>
+                    <th>Actions </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    transaction.transactions?.map( transaction => {
+                      return (
+                        <tr key={transaction.id}>
+                          <td>{formatDate( transaction.createdAt )}</td>
+                          <td>{transaction.finalDate}</td>
+                          <td>{transaction.title}</td>
+                          <td>{transaction.description}</td>
+                          <td>{transaction.category}</td>
+                          {transaction.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
+                          <td>{transaction.installments}</td>
+                          <td>{transaction.typeTransaction}</td>
+                          <td>
+                            <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
+                            <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
+                          </td>
+                        </tr>
+                      )
+                    } )
+                  }
+                </tbody>
+              </table>
+            </>
+          )
+        } ).sort()}
       </div>
     </div>
   )

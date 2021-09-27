@@ -10,7 +10,7 @@ type Expense = {
   amount: number
   installments: number
   typeMoney: string
-  initialDate: string
+  createdAt: string
   finalDate: string
   typeTransaction: string
 }
@@ -48,7 +48,7 @@ export function makeServer () {
         typeTransaction () {
           return faker.random.arrayElement( ['credit', 'debit', 'pix'] )
         },
-        initialDate () {
+        createdAt () {
           return faker.date.past().toISOString()
         },
         finalDate () {
