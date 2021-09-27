@@ -1,8 +1,10 @@
 import exportFromJson from 'export-from-json'
 
+export type ExportFileType = 'json' | 'csv' | 'txt'
+
 type ExportFileProps = {
   fileName: string
-  exportType: 'txt' | 'json' | 'csv'
+  exportType: ExportFileType
   data: object[]
 }
 

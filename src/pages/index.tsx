@@ -1,17 +1,13 @@
-import { IoIosArrowDropdown, IoIosArrowDropup, IoIosTrendingUp, IoMdCreate, IoMdDownload, IoMdTrash } from 'react-icons/io'
+import { IoMdCreate, IoMdTrash } from 'react-icons/io'
 import { useEffect, useState } from 'react'
 
 import { BackendApi } from '../services/api.services'
-import dynamic from 'next/dynamic'
-import { exportFile } from '../utils/exportFile.utils'
+import { Header } from '../components/Header'
 import { formatCash } from '../utils/formatCash.utils'
-import { options } from '../config/graph.config'
 import styles from '../styles/Home.module.scss'
 import { useTransactions } from '../context/transaction.context'
 
-const Chart = dynamic( () => import( 'react-apexcharts' ), { ssr: false } )
-
-type Expense = {
+type Transaction = {
   id: number
   title: string
   description: string
@@ -22,12 +18,6 @@ type Expense = {
   initialDate: string
   finalDate: string
   typeTransaction: string
-}
-
-type ResponseExpenseAxios = {
-  data: {
-    expenses: Expense[]
-  }
 }
 
 type ResponseMoneyAxios = {
@@ -42,8 +32,8 @@ type GraphMoney = {
 }
 
 export default function Home () {
-  const [expenses, setExpenses] = useState<Expense[]>( [] )
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
+
   const { transactions } = useTransactions()
 
   useEffect( () => {
@@ -55,62 +45,9 @@ export default function Home () {
     } )
   }, [] )
 
-  const summary = expenses.reduce( ( acc, curr ) => {
-    if ( curr.typeMoney === 'income' ) {
-      acc.deposits += Number( curr.amount )
-      acc.all += Number( curr.amount )
-    } else {
-      acc.withdrawals += Number( curr.amount )
-      acc.all += Number( curr.amount )
-    }
-
-    return acc
-  }, {
-    deposits: 0,
-    withdrawals: 0,
-    all: 0
-  } )
-
   return (
     <div className={styles.container}>
-      <header>
-        <div className={styles.header}>
-          <div className={styles.leftHeaderContent}>
-            <h1>Money</h1>
-            <section className={styles.money}>
-              <h2><IoIosTrendingUp size={'24px'} /> {formatCash( summary.all )}</h2>
-              <div>
-                <h3 className={styles.without}> <IoIosArrowDropdown size={'24px'} /> {formatCash( summary.deposits )}</h3>
-                <h3 className={styles.input}> <IoIosArrowDropup size={'24px'} /> {formatCash( summary.withdrawals )}</h3>
-              </div>
-            </section>
-          </div>
-          <div>
-            <Chart
-              options={options}
-              series={graphMoney}
-              type='area'
-              height={300}
-              width={500}
-            />
-          </div>
-          <div className={styles.rightHeaderContent}>
-            <button>New expensive</button>
-            <label>
-              <span>Export with</span>
-              <div>
-                <select name="" id="">
-                  <option value="">PDF</option>
-                  <option value="">PDF</option>
-                  <option value="">PDF</option>
-                  <option value="">PDF</option>
-                </select>
-                <button><IoMdDownload size={'24px'} onClick={() => exportFile( { data: expenses, fileName: 'expenses', exportType: 'json' } )} /></button>
-              </div>
-            </label>
-          </div>
-        </div>
-      </header>
+      <Header series={graphMoney} />
       <div className={styles.content}>
         <ul>
           <li><button>all</button></li>
@@ -137,17 +74,17 @@ export default function Home () {
             </tr>
           </thead>
           <tbody>
-            {transactions.map( ( expense: Expense ) => {
+            {transactions.map( ( transaction: Transaction ) => {
               return (
-                <tr key={expense.id}>
-                  <td>{expense.initialDate}</td>
-                  <td>{expense.finalDate}</td>
-                  <td>{expense.title}</td>
-                  <td>{expense.description}</td>
-                  <td>{expense.category}</td>
-                  {expense.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( expense.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( expense.amount ) )}</td>}
-                  <td>{expense.installments}</td>
-                  <td>{expense.typeTransaction}</td>
+                <tr key={transaction.id}>
+                  <td>{transaction.initialDate}</td>
+                  <td>{transaction.finalDate}</td>
+                  <td>{transaction.title}</td>
+                  <td>{transaction.description}</td>
+                  <td>{transaction.category}</td>
+                  {transaction.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
+                  <td>{transaction.installments}</td>
+                  <td>{transaction.typeTransaction}</td>
                   <td>
                     <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
                     <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
