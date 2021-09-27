@@ -1,12 +1,13 @@
 import { IoIosArrowDropdown, IoIosArrowDropup, IoIosTrendingUp, IoMdCreate, IoMdDownload, IoMdTrash } from 'react-icons/io'
-import { formatCash, formatDate } from '../utils/formatCash.utils'
 import { useEffect, useState } from 'react'
 
 import { BackendApi } from '../services/api.services'
 import dynamic from 'next/dynamic'
 import { exportFile } from '../utils/exportFile.utils'
+import { formatCash } from '../utils/formatCash.utils'
 import { options } from '../config/graph.config'
 import styles from '../styles/Home.module.scss'
+import { useTransactions } from '../context/transaction.context'
 
 const Chart = dynamic( () => import( 'react-apexcharts' ), { ssr: false } )
 
@@ -43,6 +44,7 @@ type GraphMoney = {
 export default function Home () {
   const [expenses, setExpenses] = useState<Expense[]>( [] )
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
+  const { transactions } = useTransactions()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -52,34 +54,6 @@ export default function Home () {
       setGraphMoney( money )
     } )
   }, [] )
-
-
-  useEffect( () => {
-    BackendApi.get( '/expenses' ).then( ( expense: ResponseExpenseAxios ) => {
-      const { data } = expense
-      const { expenses } = data
-
-      const expensesFormatted = expenses.map( ( expense: Expense ) => {
-        const { id, title, description, category, amount, installments, typeTransaction, initialDate, finalDate, typeMoney } = expense
-
-        return {
-          id,
-          title,
-          description,
-          category,
-          amount,
-          installments,
-          typeTransaction,
-          initialDate: formatDate( initialDate ),
-          finalDate: formatDate( finalDate ),
-          typeMoney
-        }
-      } )
-
-      setExpenses( expensesFormatted )
-    } )
-  }, [] )
-
 
   const summary = expenses.reduce( ( acc, curr ) => {
     if ( curr.typeMoney === 'income' ) {
@@ -108,7 +82,6 @@ export default function Home () {
               <div>
                 <h3 className={styles.without}> <IoIosArrowDropdown size={'24px'} /> {formatCash( summary.deposits )}</h3>
                 <h3 className={styles.input}> <IoIosArrowDropup size={'24px'} /> {formatCash( summary.withdrawals )}</h3>
-
               </div>
             </section>
           </div>
@@ -164,7 +137,7 @@ export default function Home () {
             </tr>
           </thead>
           <tbody>
-            {expenses.map( ( expense: Expense ) => {
+            {transactions.map( ( expense: Expense ) => {
               return (
                 <tr key={expense.id}>
                   <td>{expense.initialDate}</td>

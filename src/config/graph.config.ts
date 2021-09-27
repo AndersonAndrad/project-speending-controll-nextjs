@@ -26,7 +26,7 @@ export const options = {
     },
     y: {
       show: true,
-      formatter: ( value, { series, seriesIndex, dataPointIndex, w } ) => {
+      formatter: ( value: number ) => {
         return formatCash( value )
       }
     }

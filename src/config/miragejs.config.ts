@@ -24,12 +24,12 @@ type Money = {
 export function makeServer () {
   const server = createServer( {
     models: {
-      expense: Model.extend<Partial<Expense>>( {} ),
+      transaction: Model.extend<Partial<Expense>>( {} ),
       money: Model.extend<Partial<Money>>( {} )
     },
 
     factories: {
-      expense: Factory.extend( {
+      transaction: Factory.extend( {
         title () {
           return faker.name.firstName()
         },
@@ -82,7 +82,7 @@ export function makeServer () {
     },
 
     seeds ( server ) {
-      server.createList( 'expense', 10 ),
+      server.createList( 'transaction', 10 ),
         server.createList( 'money', 3 )
     },
 
@@ -90,7 +90,9 @@ export function makeServer () {
       this.namespace = 'api'
       this.timing = 750
 
-      this.get( '/expenses' )
+      this.get( '/transactions' )
+      this.post( '/transactions' )
+
       this.get( '/money' )
 
       this.namespace = ''

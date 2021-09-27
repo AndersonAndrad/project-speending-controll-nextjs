@@ -1,6 +1,7 @@
 import '../styles/globals.scss'
 
 import type { AppProps } from 'next/app'
+import { TransactionProvider } from '../context/transaction.context'
 import { makeServer } from './../config/miragejs.config'
 
 if ( process.env.NODE_ENV === 'development' ) {
@@ -8,6 +9,10 @@ if ( process.env.NODE_ENV === 'development' ) {
 }
 
 function MyApp ( { Component, pageProps }: AppProps ) {
-  return <Component {...pageProps} />
+  return (
+    <TransactionProvider>
+      <Component {...pageProps} />
+    </TransactionProvider>
+  )
 }
 export default MyApp
