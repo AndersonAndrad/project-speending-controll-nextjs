@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { formatCash } from '../../utils/format.utils'
 import { options } from '../../config/graph.config'
 import styles from './styles.module.scss'
+import { useTransactionModal } from '../../context/transactionModal.context'
 import { useTransactions } from '../../context/transaction.context'
 
 type DataToShowInGraph = {
@@ -20,6 +21,7 @@ const Chart = dynamic( () => import( 'react-apexcharts' ), { ssr: false } )
 
 export function Header ( { series }: HeaderProps ) {
   const { transactions } = useTransactions()
+  const { handleOpenNewTransactionModal } = useTransactionModal()
 
   const summary = transactions.reduce( ( acc, curr ) => {
     if ( curr.typeMoney === 'income' ) {
@@ -60,7 +62,7 @@ export function Header ( { series }: HeaderProps ) {
           />
         </div>
         <div className={styles.rightHeaderContent}>
-          <button>New expensive</button>
+          <button onClick={() => handleOpenNewTransactionModal()}>New expensive</button>
           <div className={styles.exportFiles}>
             <span>Export with</span>
             <div>

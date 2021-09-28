@@ -7,19 +7,6 @@ import { Header } from '../components/Header'
 import styles from '../styles/Home.module.scss'
 import { useTransactions } from '../context/transaction.context'
 
-type Transaction = {
-  id: number
-  title: string
-  description: string
-  category: string
-  amount: string
-  installments: number
-  typeMoney: string
-  createdAt: string
-  finalDate: string
-  typeTransaction: string
-}
-
 type ResponseMoneyAxios = {
   data: {
     money: GraphMoney[]
@@ -44,8 +31,6 @@ export default function Home () {
       setGraphMoney( money )
     } )
   }, [] )
-
-  console.log( transactionsFormattedPerMonth )
 
   return (
     <div className={styles.container}>
