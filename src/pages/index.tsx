@@ -21,7 +21,7 @@ type GraphMoney = {
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
 
-  const { transactionsFormattedPerMonth } = useTransactions()
+  const { transactionsFormattedPerMonth, transactions } = useTransactions()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -72,7 +72,7 @@ export default function Home () {
                           <td>{transaction.title}</td>
                           <td>{transaction.description}</td>
                           <td>{transaction.category}</td>
-                          {transaction.typeMoney === 'outcome' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
+                          {transaction.typeMoney === 'without' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
                           <td>{transaction.installments}</td>
                           <td>{transaction.typeTransaction}</td>
                           <td>
@@ -87,7 +87,7 @@ export default function Home () {
               </table>
             </>
           )
-        } ).sort()}
+        } )}
       </div>
     </div>
   )

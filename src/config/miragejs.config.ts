@@ -82,8 +82,7 @@ export function makeServer () {
     },
 
     seeds ( server ) {
-      server.createList( 'transaction', 10 ),
-        server.createList( 'money', 3 )
+      server.createList( 'money', 3 )
     },
 
     routes () {
@@ -91,7 +90,12 @@ export function makeServer () {
       this.timing = 750
 
       this.get( '/transactions' )
-      this.post( '/transactions' )
+
+      this.post( '/transactions', ( schema, request ) => {
+        const transaction = JSON.parse( request.requestBody )
+
+        return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
+      } )
 
       this.get( '/money' )
 

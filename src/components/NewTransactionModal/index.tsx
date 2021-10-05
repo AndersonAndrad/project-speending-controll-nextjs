@@ -5,6 +5,7 @@ import Modal from 'react-modal'
 import { formatDate } from '../../utils/format.utils'
 import styles from './styles.module.scss'
 import { useTransactionModal } from '../../context/transactionModal.context'
+import { useTransactions } from '../../context/transaction.context'
 
 type NewTransactionModalProps = {
   isOpen: boolean
@@ -13,13 +14,15 @@ type NewTransactionModalProps = {
 
 export function NewTransactionModal () {
   const { isOpen, handleCloseNewTransactionModal } = useTransactionModal()
+  const { addTransaction } = useTransactions()
+
   const [income, setIncome] = useState( false )
   const [without, setWithout] = useState( false )
   const [title, setTitle] = useState( '' )
   const [description, setDescription] = useState( '' )
   const [category, setCategory] = useState( '' )
-  const [type, setType] = useState( '' )
-  const [value, setValue] = useState( 0 )
+  const [typeTransaction, setTypeTransaction] = useState( '' )
+  const [amount, setAmount] = useState( 0 )
   const [installments, setInstallments] = useState( 0 )
   const [date, setDate] = useState( '' )
 
@@ -33,21 +36,35 @@ export function NewTransactionModal () {
     setIncome( false )
   }
 
+  function cleanAllState () {
+    setIncome( false )
+    setWithout( false )
+    setTitle( '' )
+    setDescription( '' )
+    setCategory( '' )
+    setTypeTransaction( '' )
+    setAmount( 0 )
+    setInstallments( 0 )
+    setDate( '' )
+  }
+
   function handleSubmitNewTransaction ( event: FormEvent ) {
     event.preventDefault()
     handleCloseNewTransactionModal()
+    cleanAllState()
 
     const newTransaction = {
       title,
       description,
       category,
-      type,
-      value,
+      typeTransaction,
+      amount: String( amount ),
       installments,
-      date,
+      finalDate: date,
       typeMoney: income ? 'income' : 'without',
     }
-    console.log( newTransaction )
+
+    addTransaction( newTransaction )
   }
 
   return (
@@ -80,14 +97,14 @@ export function NewTransactionModal () {
             </label>
             <label className={styles.smallInput}>
               <span>Type</span>
-              <input type="text" placeholder='Debit' onChange={event => { setType( event.target.value ) }} value={type} />
+              <input type="text" placeholder='Debit' onChange={event => { setTypeTransaction( event.target.value ) }} value={typeTransaction} />
             </label>
           </div>
 
           <div className={styles.smallBox}>
             <label className={styles.smallInput} >
               <span>Value</span>
-              <input type="text" placeholder='R$100,00' onChange={event => setValue( Number( event.target.value ) )} value={value} />
+              <input type="text" placeholder='R$100,00' onChange={event => setAmount( Number( event.target.value ) )} value={amount} />
             </label>
             <label className={styles.smallInput}>
               <span>Installments</span>
