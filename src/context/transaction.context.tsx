@@ -37,7 +37,6 @@ type TransactionContext = {
   transactions: Transaction[]
   transactionsFormattedPerMonth: final[]
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
-  // formatTransactionsPerMonth: ( transactions: Transaction[] ) => final[]
 }
 
 type TransactionProviderProps = {

@@ -2,7 +2,7 @@ import { Factory, Model, createServer } from "miragejs"
 
 import faker from 'faker'
 
-type Expense = {
+type Transaction = {
   id: number
   title: string
   description: string
@@ -24,8 +24,9 @@ type Money = {
 export function makeServer () {
   const server = createServer( {
     models: {
-      transaction: Model.extend<Partial<Expense>>( {} ),
-      money: Model.extend<Partial<Money>>( {} )
+      transaction: Model.extend<Partial<Transaction>>( {} ),
+      money: Model.extend<Partial<Money>>( {} ),
+      game: Model.extend<Partial<Transaction>>( {} )
     },
 
     factories: {
@@ -78,11 +79,42 @@ export function makeServer () {
             faker.random.number( 1000000 )
           ]
         },
+      } ),
+      game: Factory.extend( {
+        title () {
+          return faker.name.firstName()
+        },
+        description () {
+          return faker.lorem.sentence()
+        },
+        category () {
+          return 'games'
+        },
+        amount () {
+          return faker.random.number( 10000 )
+        },
+        installments () {
+          return faker.random.number( 2 )
+        },
+        typeTransaction () {
+          return faker.random.arrayElement( ['credit', 'debit', 'pix'] )
+        },
+        createdAt () {
+          return faker.date.past().toISOString()
+        },
+        finalDate () {
+          return faker.date.future().toISOString()
+        },
+        typeMoney () {
+          return 'outcome'
+        }
       } )
     },
 
     seeds ( server ) {
+      server.createList( 'transaction', 2 )
       server.createList( 'money', 3 )
+      server.createList( 'game', 4 )
     },
 
     routes () {
@@ -95,6 +127,10 @@ export function makeServer () {
         const transaction = JSON.parse( request.requestBody )
 
         return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
+      } )
+
+      this.get( '/games', () => {
+        return this.schema.all( 'game' )
       } )
 
       this.get( '/money' )
