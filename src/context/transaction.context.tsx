@@ -34,6 +34,8 @@ type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>
 type TransactionContext = {
   transactions: Transaction[]
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
+  deleteTransaction: () => Promise<void>
+  handleSetIdToDelete: ( id: number ) => void
 }
 
 type TransactionProviderProps = {
@@ -44,6 +46,7 @@ const TransactionContext = createContext<TransactionContext>( {} as TransactionC
 
 export function TransactionProvider ( { children }: TransactionProviderProps ) {
   const [transactions, setTransactions] = useState<Transaction[]>( [] )
+  const [idToDelete, setIdToDelete] = useState<number>( 0 )
 
 
   useEffect( () => {
@@ -72,6 +75,13 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     } )
   }, [] )
 
+  async function deleteTransaction () {
+    BackendApi.delete( `/transactions/${idToDelete}` ).then( () => {
+      const newTransactions = transactions.filter( transaction => transaction.id !== idToDelete )
+      setTransactions( newTransactions )
+    } )
+  }
+
 
   async function addTransaction ( transactionInput: TransactionInput ) {
     const response: ResponseCreateTransaction = await BackendApi.post( '/transactions', transactionInput )
@@ -80,8 +90,13 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     setTransactions( [...transactions, { ...transaction, finalDate: formatDate( transaction.finalDate ) }] )
   }
 
+  function handleSetIdToDelete ( id: number ) {
+    setIdToDelete( id )
+  }
+
+
   return (
-    <TransactionContext.Provider value={{ transactions, addTransaction }}>
+    <TransactionContext.Provider value={{ transactions, addTransaction, deleteTransaction, handleSetIdToDelete }}>
       {children}
     </TransactionContext.Provider>
   )

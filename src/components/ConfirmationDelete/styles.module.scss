@@ -1,0 +1,41 @@
+.content {
+  div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+}
+
+.primaryButton {
+  padding: 0.8rem 1.5rem;
+
+  height: 100%;
+  width: 7rem;
+
+  background: var(--orange-500);
+  font-weight: bold;
+  border-radius: 0.2rem;
+
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.8);
+  }
+}
+
+.secondaryButton {
+  padding: 0.8rem 1.5rem;
+
+  height: 100%;
+  width: 7rem;
+  font-weight: bold;
+  color: #fff;
+  background: none;
+
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.8);
+  }
+}
