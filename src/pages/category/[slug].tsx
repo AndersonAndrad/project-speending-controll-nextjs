@@ -1,76 +1,29 @@
-import { BackendApi } from '../../services/api.services'
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps } from "next"
 import { Header } from '../../components/Header'
-import { formatDate } from '../../utils/format.utils'
 
-type Transaction = {
-  id: number
-  title: string
-  description: string
-  category: string
-  amount: string
-  installments: number
-  typeMoney: string
-  createdAt: string
-  finalDate: string
-  typeTransaction: string
-}
-
-type ResponseGetTransactionsAxios = {
-  data: {
-    transactions: Transaction[]
-  }
-}
-
-type CategoryProps = {
-  transactions: Transaction[]
-}
-
-export default function Category ( { transactions }: CategoryProps ) {
-
-  const series = [
-    {
-      name: 'category',
-      data: [4000, 500, 100, 30, 10, 10000]
-    },
+export default function Category () {
+  const dataToGraph = [
+    { name: 'Games', data: [1000, 100, 2909, 1, 30] }
   ]
-
-  console.log( transactions )
 
   return (
     <div>
-      <Header series={series} />
+      <Header series={dataToGraph} />
       <h1>Category</h1>
-      {/* {transactions.map( transaction => {
-        return (
-          <ul key={transaction.id}>
-            <li>{transaction.title}</li>
-          </ul>
-        )
-      } )} */}
     </div>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ( { req, params } ) => {
-  // const { slug } = params
+  const { slug } = params as { slug: string }
 
-  const slug = 'games'
+  console.log( String( slug ) )
 
-  const response: ResponseGetTransactionsAxios = await BackendApi.get( `/games` )
+  // const response = await BackendApi.get( `/category/${String( slug )}` )
 
-  const { transactions } = response.data
-
-  const formattedTransactions: Transaction[] = transactions.map( ( transaction: Transaction ) => {
-    return {
-      ...transaction,
-      createdAt: formatDate( transaction.createdAt ),
-    }
-  } )
+  // console.log( response.data )
 
   return {
-    props: {
-      transactions: formattedTransactions
-    }
+    props: {}
   }
 }

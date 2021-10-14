@@ -38,7 +38,7 @@ export function makeServer () {
           return faker.lorem.sentence()
         },
         category () {
-          return faker.commerce.department()
+          return 'games'
         },
         amount () {
           return faker.random.number( 10000 )
@@ -112,7 +112,7 @@ export function makeServer () {
     },
 
     seeds ( server ) {
-      server.createList( 'transaction', 2 )
+      // server.createList( 'transaction', 2 )
       server.createList( 'money', 3 )
       server.createList( 'game', 4 )
     },
@@ -129,7 +129,7 @@ export function makeServer () {
         return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
       } )
 
-      this.get( '/games', () => {
+      this.get( '/category/games', () => {
         return this.schema.all( 'game' )
       } )
 

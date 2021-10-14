@@ -39,7 +39,7 @@
       text-align: left;
     }
 
-    .outcome {
+    .without {
       color: var(--red-500);
     }
     .income {
@@ -80,5 +80,13 @@
         }
       }
     }
+  }
+}
+
+.category {
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.8);
   }
 }

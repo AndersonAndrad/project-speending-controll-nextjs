@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { BackendApi } from '../services/api.services'
 import { Header } from '../components/Header'
+import Link from 'next/link'
 import styles from '../styles/Home.module.scss'
 import { useTransactions } from '../context/transaction.context'
 
@@ -20,8 +21,8 @@ type GraphMoney = {
 
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
+  const { transactions } = useTransactions()
 
-  const { transactionsFormattedPerMonth, transactions } = useTransactions()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -44,50 +45,43 @@ export default function Home () {
           <li><button>2024</button></li>
           <li><button>2025</button></li>
         </ul>
-        {transactionsFormattedPerMonth.map( transaction => {
-          return (
-            <>
-              <h1>{transaction.month}</h1>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Created</th>
-                    <th>Final date</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Value</th>
-                    <th>Installments</th>
-                    <th>Type</th>
-                    <th>Actions </th>
+        <table>
+          <thead>
+            <tr>
+              <th>Created</th>
+              <th>Final date</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Value</th>
+              <th>Installments</th>
+              <th>Type</th>
+              <th>Actions </th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              transactions?.map( transaction => {
+                return (
+                  <tr key={transaction.id}>
+                    <td>{formatDate( transaction.createdAt )}</td>
+                    <td>{transaction.finalDate}</td>
+                    <td>{transaction.title}</td>
+                    <td>{transaction.description}</td>
+                    <td className={styles.category}><Link href={`/category/${transaction.category}`}>{transaction.category}</Link></td>
+                    {transaction.typeMoney === 'income' ? <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.without}>{formatCash( Number( transaction.amount ) )}</td>}
+                    <td>{transaction.installments}</td>
+                    <td>{transaction.typeTransaction}</td>
+                    <td>
+                      <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
+                      <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {
-                    transaction.transactions?.map( transaction => {
-                      return (
-                        <tr key={transaction.id}>
-                          <td>{formatDate( transaction.createdAt )}</td>
-                          <td>{transaction.finalDate}</td>
-                          <td>{transaction.title}</td>
-                          <td>{transaction.description}</td>
-                          <td>{transaction.category}</td>
-                          {transaction.typeMoney === 'without' ? <td className={styles.outcome}>{formatCash( Number( transaction.amount ) )}</td> : <td className={styles.income}>{formatCash( Number( transaction.amount ) )}</td>}
-                          <td>{transaction.installments}</td>
-                          <td>{transaction.typeTransaction}</td>
-                          <td>
-                            <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
-                            <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
-                          </td>
-                        </tr>
-                      )
-                    } )
-                  }
-                </tbody>
-              </table>
-            </>
-          )
-        } )}
+                )
+              } )
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   )

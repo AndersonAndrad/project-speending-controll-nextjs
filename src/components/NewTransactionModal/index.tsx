@@ -22,8 +22,8 @@ export function NewTransactionModal () {
   const [description, setDescription] = useState( '' )
   const [category, setCategory] = useState( '' )
   const [typeTransaction, setTypeTransaction] = useState( '' )
-  const [amount, setAmount] = useState( 0 )
-  const [installments, setInstallments] = useState( 0 )
+  const [amount, setAmount] = useState( '' )
+  const [installments, setInstallments] = useState( '' )
   const [date, setDate] = useState( '' )
 
   function handleDefineIncome () {
@@ -43,8 +43,8 @@ export function NewTransactionModal () {
     setDescription( '' )
     setCategory( '' )
     setTypeTransaction( '' )
-    setAmount( 0 )
-    setInstallments( 0 )
+    setAmount( '' )
+    setInstallments( '' )
     setDate( '' )
   }
 
@@ -59,10 +59,11 @@ export function NewTransactionModal () {
       category,
       typeTransaction,
       amount: String( amount ),
-      installments,
+      installments: String( installments ),
       finalDate: date,
       typeMoney: income ? 'income' : 'without',
     }
+
 
     addTransaction( newTransaction )
   }
@@ -104,11 +105,11 @@ export function NewTransactionModal () {
           <div className={styles.smallBox}>
             <label className={styles.smallInput} >
               <span>Value</span>
-              <input type="text" placeholder='R$100,00' onChange={event => setAmount( Number( event.target.value ) )} value={amount} />
+              <input type="text" placeholder='R$100,00' onChange={event => setAmount( event.target.value )} value={amount} />
             </label>
             <label className={styles.smallInput}>
               <span>Installments</span>
-              <input type="number" placeholder='4' onChange={event => setInstallments( Number( event.target.value ) )} value={installments} />
+              <input type="number" placeholder='4' onChange={event => setInstallments( event.target.value )} value={installments} />
             </label>
           </div>
 

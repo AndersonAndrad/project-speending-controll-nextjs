@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { formatDate, getMonth } from '../utils/format.utils'
 
 import { BackendApi } from '../services/api.services'
+import { formatDate } from '../utils/format.utils'
 
 type FormattedTransactions = {
   [month: string]: {
@@ -10,15 +10,13 @@ type FormattedTransactions = {
   }
 }
 
-type final = { month: string, transactions: Transaction[] }
-
 type Transaction = {
   id: number
   title: string
   description: string
   category: string
   amount: string
-  installments: number
+  installments: string
   typeMoney: string
   createdAt: string
   finalDate: string
@@ -35,7 +33,6 @@ type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>
 
 type TransactionContext = {
   transactions: Transaction[]
-  transactionsFormattedPerMonth: final[]
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
 }
 
@@ -46,10 +43,8 @@ type TransactionProviderProps = {
 const TransactionContext = createContext<TransactionContext>( {} as TransactionContext )
 
 export function TransactionProvider ( { children }: TransactionProviderProps ) {
-  const [transactionsFormattedPerMonth, setTransactionsFormattedPerMonth] = useState<final[]>( [{}] as final[] )
   const [transactions, setTransactions] = useState<Transaction[]>( [] )
 
-  let formattedTransactions: FormattedTransactions = {}
 
   useEffect( () => {
     BackendApi.get( '/transactions' ).then( ( { data } ) => {
@@ -74,37 +69,19 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
 
       setTransactions( transactionsFormatted )
 
-      formatTransactionsPerMonth( transactionsFormatted )
-
     } )
   }, [] )
 
-  function formatTransactionsPerMonth ( transactions: Transaction[] ) {
-    transactions.map( ( transactions: Transaction ) => {
-      if ( !formattedTransactions[getMonth( transactions.createdAt )] ) {
-        formattedTransactions[getMonth( transactions.createdAt )] = {
-          month: getMonth( transactions.createdAt ),
-          transactions: [transactions],
-        }
-      } else {
-        formattedTransactions[getMonth( transactions.createdAt )].transactions.push( transactions )
-      }
-    } )
-
-    setTransactionsFormattedPerMonth( Object.values( formattedTransactions ) as final[] )
-  }
 
   async function addTransaction ( transactionInput: TransactionInput ) {
     const response: ResponseCreateTransaction = await BackendApi.post( '/transactions', transactionInput )
     const { transaction } = response.data
 
     setTransactions( [...transactions, { ...transaction, finalDate: formatDate( transaction.finalDate ) }] )
-
-    formatTransactionsPerMonth( transactions )
   }
 
   return (
-    <TransactionContext.Provider value={{ transactionsFormattedPerMonth, transactions, addTransaction }}>
+    <TransactionContext.Provider value={{ transactions, addTransaction }}>
       {children}
     </TransactionContext.Provider>
   )
