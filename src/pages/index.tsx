@@ -6,6 +6,7 @@ import { BackendApi } from '../services/api.services'
 import { Header } from '../components/Header'
 import Link from 'next/link'
 import styles from '../styles/Home.module.scss'
+import { useConfirmationDeleteModal } from '../context/confirmationDelete.context'
 import { useTransactions } from '../context/transaction.context'
 
 type ResponseMoneyAxios = {
@@ -21,8 +22,8 @@ type GraphMoney = {
 
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
-  const { transactions } = useTransactions()
-
+  const { transactions, handleSetIdToDelete } = useTransactions()
+  const { handleOpenConfirmationDeleteModal } = useConfirmationDeleteModal()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -74,7 +75,7 @@ export default function Home () {
                     <td>{transaction.typeTransaction}</td>
                     <td>
                       <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
-                      <button className={styles.delete}><IoMdTrash color={'#262626'} size={'24px'} /></button>
+                      <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} ><IoMdTrash color={'#262626'} size={'24px'} /></button>
                     </td>
                   </tr>
                 )

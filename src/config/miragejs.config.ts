@@ -112,7 +112,7 @@ export function makeServer () {
     },
 
     seeds ( server ) {
-      // server.createList( 'transaction', 2 )
+      server.createList( 'transaction', 2 )
       server.createList( 'money', 3 )
       server.createList( 'game', 4 )
     },
@@ -123,14 +123,12 @@ export function makeServer () {
 
       this.get( '/transactions' )
 
+      this.delete( '/transactions/:id' )
+
       this.post( '/transactions', ( schema, request ) => {
         const transaction = JSON.parse( request.requestBody )
 
         return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
-      } )
-
-      this.get( '/category/games', () => {
-        return this.schema.all( 'game' )
       } )
 
       this.get( '/money' )
