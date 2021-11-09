@@ -87,3 +87,14 @@ export default function Home () {
     </div>
   )
 }
+
+/**
+ * TODO: Add open modal to edit ❌
+ * TODO: Add context edit modal in index.tsx ❌
+ * TODO: Add all calls to context to edit ❌
+ * TODO: Create context to edit ✅
+ * TODO: Create context to open modal edit ✅
+ * TODO: Modify transaction context to update ✅
+ * TODO: Modify transaction context to get id transaction to update ✅
+ * TODO: Add function to get only one transaction ✅
+*/
