@@ -33,12 +33,13 @@ type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>
 
 type TransactionContext = {
   transactions: Transaction[]
+  transaction: Transaction
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
   deleteTransaction: () => Promise<void>
   handleSetIdToDelete: ( id: number ) => void
   handleSetIdToEdit: ( id: number ) => void
   editTransaction: ( transaction: Omit<Transaction, 'createdAt'> ) => Promise<void>
-  getOnlyTransaction: () => Promise<Transaction>
+  getOnlyTransaction: () => void
 }
 
 type TransactionProviderProps = {
@@ -49,8 +50,8 @@ const TransactionContext = createContext<TransactionContext>( {} as TransactionC
 
 export function TransactionProvider ( { children }: TransactionProviderProps ) {
   const [transactions, setTransactions] = useState<Transaction[]>( [] )
-  const [idToDelete, setIdToDelete] = useState<number>( 0 )
-  const [idToEdit, setIdToEdit] = useState<number>( 0 )
+  const [idTransaction, setIdTransaction] = useState<number>( 0 )
+  const [transaction, setTransaction] = useState<Transaction>( {} as Transaction )
 
 
   useEffect( () => {
@@ -80,8 +81,8 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
   }, [] )
 
   async function deleteTransaction (): Promise<void> {
-    await BackendApi.delete( `/transactions/${idToDelete}` ).then( () => {
-      const newTransactions = transactions.filter( transaction => transaction.id !== idToDelete )
+    await BackendApi.delete( `/transactions/${idTransaction}` ).then( () => {
+      const newTransactions = transactions.filter( transaction => transaction.id !== idTransaction )
       setTransactions( newTransactions )
     } )
   }
@@ -94,11 +95,13 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
   }
 
   function handleSetIdToDelete ( id: number ): void {
-    setIdToDelete( id )
+    setIdTransaction( id )
   }
 
   function handleSetIdToEdit ( id: number ): void {
-    setIdToEdit( id )
+    setIdTransaction( id )
+    getOnlyTransaction()
+
   }
 
   async function editTransaction ( transaction: Omit<Transaction, 'createdAt'> ): Promise<void> {
@@ -129,20 +132,19 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     } )
   }
 
-  async function getOnlyTransaction (): Promise<Transaction> {
-    const transaction = await BackendApi.get( `/transactions/${idToEdit}` ).then( ( { data } ) => {
+  async function getOnlyTransaction () {
+    const transaction = await BackendApi.get( `/transactions/${idTransaction}` ).then( ( { data } ) => {
 
       const transactionsFormatted: Transaction = { ...data.transaction, finalDate: formatDate( data.transaction.finalDate ) }
 
       return transactionsFormatted
     } )
 
-
-    return transaction
+    setTransaction( transaction )
   }
 
   return (
-    <TransactionContext.Provider value={{ transactions, addTransaction, deleteTransaction, handleSetIdToDelete, editTransaction, getOnlyTransaction, handleSetIdToEdit }}>
+    <TransactionContext.Provider value={{ transactions, transaction, addTransaction, deleteTransaction, handleSetIdToDelete, editTransaction, getOnlyTransaction, handleSetIdToEdit }}>
       {children}
     </TransactionContext.Provider>
   )

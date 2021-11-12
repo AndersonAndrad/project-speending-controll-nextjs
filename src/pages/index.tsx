@@ -7,6 +7,7 @@ import { Header } from '../components/Header'
 import Link from 'next/link'
 import styles from '../styles/Home.module.scss'
 import { useConfirmationDeleteModal } from '../context/confirmationDelete.context'
+import { useEditModal } from '../context/EditModal.context'
 import { useTransactions } from '../context/transaction.context'
 
 type ResponseMoneyAxios = {
@@ -22,7 +23,8 @@ type GraphMoney = {
 
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
-  const { transactions, handleSetIdToDelete } = useTransactions()
+  const { transactions, handleSetIdToDelete, handleSetIdToEdit } = useTransactions()
+  const { handleOpenEditModal } = useEditModal()
   const { handleOpenConfirmationDeleteModal } = useConfirmationDeleteModal()
 
   useEffect( () => {
@@ -74,7 +76,7 @@ export default function Home () {
                     <td>{transaction.installments}</td>
                     <td>{transaction.typeTransaction}</td>
                     <td>
-                      <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
+                      <button className={styles.edit} onClick={() => { handleSetIdToEdit( transaction.id ), handleOpenEditModal() }}  ><IoMdCreate color={'#fff'} size={'24px'} /></button>
                       <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} ><IoMdTrash color={'#262626'} size={'24px'} /></button>
                     </td>
                   </tr>
@@ -89,9 +91,11 @@ export default function Home () {
 }
 
 /**
- * TODO: Add open modal to edit ❌
- * TODO: Add context edit modal in index.tsx ❌
- * TODO: Add all calls to context to edit ❌
+ * TODO: Send data to update modal (add in config mirage js) ❌
+ * TODO: Fix the preload all data in modal to edit ❌
+ * TODO: Add open modal to edit ✅
+ * TODO: Add context edit modal in index.tsx ✅
+ * TODO: Add all calls to context to edit ✅
  * TODO: Create context to edit ✅
  * TODO: Create context to open modal edit ✅
  * TODO: Modify transaction context to update ✅

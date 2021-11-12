@@ -20,6 +20,8 @@ type Transaction = {
 }
 
 export function EditTransactionModal () {
+  const { editTransaction, getOnlyTransaction, transaction } = useTransactions()
+
   const [idTransaction, setIdTransaction] = useState<number>()
   const [income, setIncome] = useState( false )
   const [without, setWithout] = useState( false )
@@ -31,20 +33,7 @@ export function EditTransactionModal () {
   const [installments, setInstallments] = useState( '' )
   const [date, setDate] = useState( '' )
 
-  const { editTransaction, getOnlyTransaction } = useTransactions()
   const { isOpen, handleCloseEditModal } = useEditModal()
-
-  getOnlyTransaction().then( ( transaction: Transaction ) => {
-    transaction.typeTransaction === 'income' ? setIncome( true ) : setWithout( true )
-    setIdTransaction( transaction.id )
-    setTitle( transaction.title )
-    setDescription( transaction.description )
-    setCategory( transaction.category )
-    setTypeTransaction( transaction.typeTransaction )
-    setAmount( transaction.amount )
-    setInstallments( transaction.installments )
-    setDate( transaction.finalDate )
-  } )
 
   function handleDefineIncome () {
     setIncome( true )
@@ -96,7 +85,7 @@ export function EditTransactionModal () {
     >
       <form onSubmit={handleSubmitNewTransaction}>
         <header className={styles.header}>
-          <h3>New Transaction</h3>
+          <h3>Edit transaction {title}</h3>
           <button onClick={() => handleCloseEditModal()}><IoIosClose size={34} color={'#fff'} /></button>
         </header>
         <div className={styles.content}>

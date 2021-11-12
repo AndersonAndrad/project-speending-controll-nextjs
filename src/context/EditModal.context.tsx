@@ -15,8 +15,13 @@ const EditModalContext = createContext<EditModalContext>( {} as EditModalContext
 export function EditModalProvider ( { children }: EditModalProvider ) {
   const [isOpen, setIsOpen] = useState( false )
 
-  const handleOpenEditModal = () => setIsOpen( true )
-  const handleCloseEditModal = () => setIsOpen( false )
+  function handleOpenEditModal () {
+    setIsOpen( true )
+  }
+
+  function handleCloseEditModal () {
+    setIsOpen( false )
+  }
 
   return (
     <EditModalContext.Provider value={{ isOpen, handleOpenEditModal, handleCloseEditModal }}>

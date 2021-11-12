@@ -3,6 +3,8 @@ import '../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import { ConfirmationDeleteModal } from '../components/ConfirmationDelete'
 import { ConfirmationDeleteModalProvider } from '../context/confirmationDelete.context'
+import { EditModalProvider } from '../context/EditModal.context'
+import { EditTransactionModal } from '../components/EditTransactionModal'
 import { NewTransactionModal } from '../components/NewTransactionModal'
 import { TransactionModalProvider } from '../context/transactionModal.context'
 import { TransactionProvider } from '../context/transaction.context'
@@ -18,9 +20,12 @@ function MyApp ( { Component, pageProps }: AppProps ) {
     <TransactionProvider>
       <TransactionModalProvider>
         <ConfirmationDeleteModalProvider>
-          <Component {...pageProps} />
-          <NewTransactionModal />
-          <ConfirmationDeleteModal />
+          <EditModalProvider>
+            <Component {...pageProps} />
+            <NewTransactionModal />
+            <ConfirmationDeleteModal />
+            <EditTransactionModal />
+          </EditModalProvider>
         </ConfirmationDeleteModalProvider>
       </TransactionModalProvider>
     </TransactionProvider>

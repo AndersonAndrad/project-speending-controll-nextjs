@@ -125,6 +125,8 @@ export function makeServer () {
 
       this.delete( '/transactions/:id' )
 
+      this.get( '/transactions/:id' )
+
       this.post( '/transactions', ( schema, request ) => {
         const transaction = JSON.parse( request.requestBody )
 
