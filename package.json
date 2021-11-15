@@ -1,6 +1,6 @@
 {
   "name": "spedding-control",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2s",
   "private": true,
   "scripts": {
     "dev": "next dev",

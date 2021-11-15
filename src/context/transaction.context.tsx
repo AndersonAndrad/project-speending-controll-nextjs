@@ -37,9 +37,7 @@ type TransactionContext = {
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
   deleteTransaction: () => Promise<void>
   handleSetIdToDelete: ( id: number ) => void
-  handleSetIdToEdit: ( id: number ) => void
   editTransaction: ( transaction: Omit<Transaction, 'createdAt'> ) => Promise<void>
-  getOnlyTransaction: () => void
 }
 
 type TransactionProviderProps = {
@@ -98,53 +96,14 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     setIdTransaction( id )
   }
 
-  function handleSetIdToEdit ( id: number ): void {
-    setIdTransaction( id )
-    getOnlyTransaction()
-
-  }
-
   async function editTransaction ( transaction: Omit<Transaction, 'createdAt'> ): Promise<void> {
-    await BackendApi.put( `/transactions/${transaction.id}`, transaction )
+    // await BackendApi.put( `/transactions/${transaction.id}`, transaction ).then( () => { console.log( 'is ok' ) } )
 
-    await BackendApi.get( '/transactions' ).then( ( { data } ) => {
-      const { transactions } = data
-
-      const transactionsFormatted: Transaction[] = transactions.map( ( transaction: Transaction ) => {
-        const { id, title, description, category, amount, installments, typeTransaction, createdAt, finalDate, typeMoney } = transaction
-
-        return {
-          id,
-          title,
-          description,
-          category,
-          amount,
-          installments,
-          typeTransaction,
-          createdAt,
-          finalDate: formatDate( finalDate ),
-          typeMoney
-        }
-      } )
-
-      setTransactions( transactionsFormatted )
-
-    } )
-  }
-
-  async function getOnlyTransaction () {
-    const transaction = await BackendApi.get( `/transactions/${idTransaction}` ).then( ( { data } ) => {
-
-      const transactionsFormatted: Transaction = { ...data.transaction, finalDate: formatDate( data.transaction.finalDate ) }
-
-      return transactionsFormatted
-    } )
-
-    setTransaction( transaction )
+    console.log( transaction )
   }
 
   return (
-    <TransactionContext.Provider value={{ transactions, transaction, addTransaction, deleteTransaction, handleSetIdToDelete, editTransaction, getOnlyTransaction, handleSetIdToEdit }}>
+    <TransactionContext.Provider value={{ transactions, transaction, addTransaction, deleteTransaction, handleSetIdToDelete, editTransaction }}>
       {children}
     </TransactionContext.Provider>
   )

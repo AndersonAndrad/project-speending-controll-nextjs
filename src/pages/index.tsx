@@ -23,7 +23,7 @@ type GraphMoney = {
 
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
-  const { transactions, handleSetIdToDelete, handleSetIdToEdit } = useTransactions()
+  const { transactions, handleSetIdToDelete, getOnlyTransaction } = useTransactions()
   const { handleOpenEditModal } = useEditModal()
   const { handleOpenConfirmationDeleteModal } = useConfirmationDeleteModal()
 
@@ -76,7 +76,9 @@ export default function Home () {
                     <td>{transaction.installments}</td>
                     <td>{transaction.typeTransaction}</td>
                     <td>
-                      <button className={styles.edit} onClick={() => { handleSetIdToEdit( transaction.id ), handleOpenEditModal() }}  ><IoMdCreate color={'#fff'} size={'24px'} /></button>
+                      <Link href={`/transactions/update/${transaction.id}`}>
+                        <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
+                      </Link>
                       <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} ><IoMdTrash color={'#262626'} size={'24px'} /></button>
                     </td>
                   </tr>

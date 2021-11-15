@@ -21,6 +21,7 @@ type Transaction = {
 
 export function EditTransactionModal () {
   const { editTransaction, getOnlyTransaction, transaction } = useTransactions()
+  const { isOpen, handleCloseEditModal } = useEditModal()
 
   const [idTransaction, setIdTransaction] = useState<number>()
   const [income, setIncome] = useState( false )
@@ -33,7 +34,6 @@ export function EditTransactionModal () {
   const [installments, setInstallments] = useState( '' )
   const [date, setDate] = useState( '' )
 
-  const { isOpen, handleCloseEditModal } = useEditModal()
 
   function handleDefineIncome () {
     setIncome( true )
