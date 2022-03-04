@@ -17,7 +17,7 @@ export default function Category () {
 export const getServerSideProps: GetServerSideProps = async ( { req, params } ) => {
   const { slug } = params as { slug: string }
 
-  console.log( String( slug ) )
+  // console.log( String( slug ) )
 
   // const response = await BackendApi.get( `/category/${String( slug )}` )
 

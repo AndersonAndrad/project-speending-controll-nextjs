@@ -7,6 +7,7 @@ import { Header } from '../components/Header'
 import Link from 'next/link'
 import styles from '../styles/Home.module.scss'
 import { useConfirmationDeleteModal } from '../context/confirmationDelete.context'
+import { useTransactionModal } from '../context/transactionModal.context'
 import { useTransactions } from '../context/transaction.context'
 
 type ResponseMoneyAxios = {
@@ -22,8 +23,9 @@ type GraphMoney = {
 
 export default function Home () {
   const [graphMoney, setGraphMoney] = useState<GraphMoney[]>( [] )
-  const { transactions, handleSetIdToDelete } = useTransactions()
+  const { transactions, handleSetIdToDelete, setIdToUpdate } = useTransactions()
   const { handleOpenConfirmationDeleteModal } = useConfirmationDeleteModal()
+  const { handleOpenEditTransactionModal } = useTransactionModal()
 
   useEffect( () => {
     BackendApi.get( '/money' ).then( ( moneys: ResponseMoneyAxios ) => {
@@ -74,8 +76,12 @@ export default function Home () {
                     <td>{transaction.installments}</td>
                     <td>{transaction.typeTransaction}</td>
                     <td>
-                      <button className={styles.edit}><IoMdCreate color={'#fff'} size={'24px'} /></button>
-                      <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} ><IoMdTrash color={'#262626'} size={'24px'} /></button>
+                      <button className={styles.edit} onClick={() => { setIdToUpdate( transaction.id ), handleOpenEditTransactionModal() }}>
+                        <IoMdCreate color={'#fff'} size={'24px'} />
+                      </button>
+                      <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} >
+                        <IoMdTrash color={'#262626'} size={'24px'} />
+                      </button>
                     </td>
                   </tr>
                 )

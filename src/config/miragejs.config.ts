@@ -121,6 +121,8 @@ export function makeServer () {
       this.namespace = 'api'
       this.timing = 750
 
+      this.get( '/transactions/:id' )
+
       this.get( '/transactions' )
 
       this.delete( '/transactions/:id' )
@@ -129,6 +131,12 @@ export function makeServer () {
         const transaction = JSON.parse( request.requestBody )
 
         return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
+      } )
+
+      this.put( '/transactions/:id', ( schema, request ) => {
+        const transaction = schema.find( 'transaction', request.params.id )
+
+        transaction?.update( JSON.parse( request.requestBody ) )
       } )
 
       this.get( '/money' )

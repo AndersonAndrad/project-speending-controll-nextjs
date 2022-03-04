@@ -10,7 +10,7 @@ type FormattedTransactions = {
   }
 }
 
-type Transaction = {
+export type Transaction = {
   id: number
   title: string
   description: string
@@ -32,10 +32,14 @@ type ResponseCreateTransaction = {
 type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>
 
 type TransactionContext = {
+  idToUpdate: number
   transactions: Transaction[]
   addTransaction: ( transaction: TransactionInput ) => Promise<void>
   deleteTransaction: () => Promise<void>
+  editTransaction: ( transaction: Transaction ) => Promise<void>
+  getTransactionById: ( id: number ) => Promise<Transaction>
   handleSetIdToDelete: ( id: number ) => void
+  setIdToUpdate: ( id: number ) => void
 }
 
 type TransactionProviderProps = {
@@ -47,7 +51,7 @@ const TransactionContext = createContext<TransactionContext>( {} as TransactionC
 export function TransactionProvider ( { children }: TransactionProviderProps ) {
   const [transactions, setTransactions] = useState<Transaction[]>( [] )
   const [idToDelete, setIdToDelete] = useState<number>( 0 )
-
+  const [idToUpdate, setIdToUpdate] = useState<number>( 0 )
 
   useEffect( () => {
     BackendApi.get( '/transactions' ).then( ( { data } ) => {
@@ -82,7 +86,6 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     } )
   }
 
-
   async function addTransaction ( transactionInput: TransactionInput ) {
     const response: ResponseCreateTransaction = await BackendApi.post( '/transactions', transactionInput )
     const { transaction } = response.data
@@ -90,13 +93,38 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     setTransactions( [...transactions, { ...transaction, finalDate: formatDate( transaction.finalDate ) }] )
   }
 
+  async function editTransaction ( transaction: Transaction ) {
+    const response: ResponseCreateTransaction = await BackendApi.put( `/transactions/${transaction.id}`, transaction )
+    const { transaction: updatedTransaction } = response.data
+
+    setTransactions( transactions.map( transaction => transaction.id === updatedTransaction.id ? updatedTransaction : transaction ) )
+  }
+
   function handleSetIdToDelete ( id: number ) {
     setIdToDelete( id )
   }
 
+  function getTransactionById ( id: number ) {
+    const transaction = BackendApi.get( `/transactions/${id}` ).then( ( { data } ) => data.transaction )
+
+    if ( !transaction ) {
+      return {} as Transaction
+    }
+
+    return transaction
+  }
 
   return (
-    <TransactionContext.Provider value={{ transactions, addTransaction, deleteTransaction, handleSetIdToDelete }}>
+    <TransactionContext.Provider value={{
+      transactions,
+      addTransaction,
+      deleteTransaction,
+      editTransaction,
+      handleSetIdToDelete,
+      getTransactionById,
+      setIdToUpdate,
+      idToUpdate
+    }}>
       {children}
     </TransactionContext.Provider>
   )
