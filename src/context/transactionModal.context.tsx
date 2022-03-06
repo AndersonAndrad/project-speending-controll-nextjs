@@ -9,17 +9,22 @@ type TransactionModalProps = {
 type TransactionModalContextType = {
   isOpen: boolean
   isOpenEditModal: boolean
+  isOpenDeleteModal: boolean
   handleOpenNewTransactionModal: () => void
   handleCloseNewTransactionModal: () => void
   handleOpenEditTransactionModal: ( id: number ) => void
   handleCloseEditTransactionModal: () => void
+  handleOpenConfirmationDeleteModal: () => void
+  handleCloseConfirmationDeleteModal: () => void
 }
 
 const TransactionModalContext = createContext<TransactionModalContextType>( {} as TransactionModalContextType )
 
 export function TransactionModalProvider ( { children }: TransactionModalProps ) {
-  const [isOpen, setIsOpen] = useState( false )
-  const [isOpenEditModal, setIsOpenEditModal] = useState( false )
+  const [isOpen, setIsOpen] = useState<boolean>( false )
+  const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>( false )
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>( false )
+
 
   const { setIdToUpdate } = useTransactions()
 
@@ -41,14 +46,25 @@ export function TransactionModalProvider ( { children }: TransactionModalProps )
     setIsOpenEditModal( false )
   }
 
+  function handleOpenConfirmationDeleteModal () {
+    setIsOpenDeleteModal( true )
+  }
+
+  function handleCloseConfirmationDeleteModal () {
+    setIsOpenDeleteModal( false )
+  }
+
   return (
     <TransactionModalContext.Provider value={{
       isOpen,
       isOpenEditModal,
+      isOpenDeleteModal,
       handleOpenNewTransactionModal,
       handleCloseNewTransactionModal,
       handleCloseEditTransactionModal,
-      handleOpenEditTransactionModal
+      handleOpenEditTransactionModal,
+      handleCloseConfirmationDeleteModal,
+      handleOpenConfirmationDeleteModal
     }}>
       {children}
     </TransactionModalContext.Provider>

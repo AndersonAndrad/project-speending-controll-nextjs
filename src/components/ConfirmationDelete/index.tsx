@@ -1,15 +1,15 @@
 import Modal from 'react-modal'
 import style from './styles.module.scss'
-import { useConfirmationDeleteModal } from "../../context/confirmationDelete.context"
+import { useTransactionModal } from '../../context/transactionModal.context'
 import { useTransactions } from '../../context/transaction.context'
 
 export function ConfirmationDeleteModal () {
-  const { isOpen, handleCloseConfirmationDeleteModal } = useConfirmationDeleteModal()
+  const { isOpenDeleteModal, handleCloseConfirmationDeleteModal } = useTransactionModal()
   const { deleteTransaction } = useTransactions()
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={isOpenDeleteModal}
       onRequestClose={handleCloseConfirmationDeleteModal}
       contentLabel="Confirmation Delete Modal"
       className="react-modal-confirmation-delete"
