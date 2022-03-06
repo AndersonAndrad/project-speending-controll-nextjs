@@ -76,7 +76,7 @@ export default function Home () {
                     <td>{transaction.installments}</td>
                     <td>{transaction.typeTransaction}</td>
                     <td>
-                      <button className={styles.edit} onClick={() => { setIdToUpdate( transaction.id ), handleOpenEditTransactionModal() }}>
+                      <button className={styles.edit} onClick={() => { handleOpenEditTransactionModal( transaction.id ) }}>
                         <IoMdCreate color={'#fff'} size={'24px'} />
                       </button>
                       <button className={styles.delete} onClick={() => { handleSetIdToDelete( transaction.id ), handleOpenConfirmationDeleteModal() }} >

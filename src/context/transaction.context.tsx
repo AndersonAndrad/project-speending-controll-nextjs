@@ -94,7 +94,7 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
   }
 
   async function editTransaction ( transaction: Transaction ) {
-    const response: ResponseCreateTransaction = await BackendApi.put( `/transactions/${transaction.id}`, transaction )
+    const response: ResponseCreateTransaction = await BackendApi.patch( `/transactions/${transaction.id}`, transaction )
     const { transaction: updatedTransaction } = response.data
 
     setTransactions( transactions.map( transaction => transaction.id === updatedTransaction.id ? updatedTransaction : transaction ) )
@@ -104,12 +104,8 @@ export function TransactionProvider ( { children }: TransactionProviderProps ) {
     setIdToDelete( id )
   }
 
-  function getTransactionById ( id: number ) {
+  function getTransactionById ( id: number ): Promise<Transaction> {
     const transaction = BackendApi.get( `/transactions/${id}` ).then( ( { data } ) => data.transaction )
-
-    if ( !transaction ) {
-      return {} as Transaction
-    }
 
     return transaction
   }

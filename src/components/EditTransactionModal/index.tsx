@@ -17,32 +17,32 @@ export function EditTransactionModal () {
   const { editTransaction, getTransactionById, idToUpdate } = useTransactions()
   const [transaction, setTransaction] = useState<Transaction>()
 
-  const [income, setIncome] = useState( false )
-  const [without, setWithout] = useState( false )
-  const [title, setTitle] = useState( '' )
-  const [description, setDescription] = useState( '' )
-  const [category, setCategory] = useState( '' )
-  const [typeTransaction, setTypeTransaction] = useState( '' )
-  const [amount, setAmount] = useState( '' )
-  const [installments, setInstallments] = useState( '' )
-  const [date, setDate] = useState( '' )
+  const [income, setIncome] = useState<boolean>( false )
+  const [without, setWithout] = useState<boolean>( false )
+  const [title, setTitle] = useState<string>( '' )
+  const [description, setDescription] = useState<string>( '' )
+  const [category, setCategory] = useState<string>( '' )
+  const [typeTransaction, setTypeTransaction] = useState<string>( '' )
+  const [amount, setAmount] = useState<string>( '' )
+  const [installments, setInstallments] = useState<string>( '' )
+  const [date, setDate] = useState<Date | string>( '' )
 
   useEffect( () => {
-    // if ( isOpenEditModal ) {
-    getTransactionById( idToUpdate ).then( ( transaction ) => {
-      setTransaction( transaction )
+    if ( isOpenEditModal ) {
+      getTransactionById( idToUpdate ).then( ( transaction ) => {
+        setTransaction( transaction )
 
-      setIncome( transaction.typeTransaction === 'income' )
-      setWithout( transaction.typeTransaction === 'without' )
-      setTitle( transaction.title )
-      setDescription( transaction.description )
-      setCategory( transaction.category )
-      setTypeTransaction( transaction.typeTransaction )
-      setAmount( transaction.amount )
-      setInstallments( transaction.installments )
-      setDate( transaction.finalDate )
-    } )
-    // }
+        setIncome( transaction.typeTransaction === 'income' )
+        setWithout( transaction.typeTransaction === 'without' )
+        setTitle( transaction.title )
+        setDescription( transaction.description )
+        setCategory( transaction.category )
+        setTypeTransaction( transaction.typeTransaction )
+        setAmount( transaction.amount )
+        setInstallments( transaction.installments )
+        setDate( transaction.finalDate )
+      } )
+    }
   }, [isOpenEditModal] )
 
   function handleDefineIncome () {
@@ -135,7 +135,7 @@ export function EditTransactionModal () {
           <div className={styles.smallBox}>
             <label>
               <span>End date</span>
-              <input type="date" onChange={event => setDate( event.target.value )} value={date} />
+              <input type="date" onChange={event => setDate( event.target.value )} value={String( new Date( date ) )} />
             </label>
             <label>
               <span>{formatDate( String( new Date() ) )}</span>

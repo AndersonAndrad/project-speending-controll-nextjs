@@ -133,10 +133,11 @@ export function makeServer () {
         return schema.create( 'transaction', { ...transaction, createdAt: new Date() } )
       } )
 
-      this.put( '/transactions/:id', ( schema, request ) => {
+      this.patch( 'transactions/:id', ( schema, request ) => {
+        const updatedTransaction = JSON.parse( request.requestBody )
         const transaction = schema.find( 'transaction', request.params.id )
 
-        transaction?.update( JSON.parse( request.requestBody ) )
+        return transaction?.update( updatedTransaction )
       } )
 
       this.get( '/money' )

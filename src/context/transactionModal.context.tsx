@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react"
 
+import { useTransactions } from './transaction.context'
+
 type TransactionModalProps = {
   children: React.ReactNode
 }
@@ -9,7 +11,7 @@ type TransactionModalContextType = {
   isOpenEditModal: boolean
   handleOpenNewTransactionModal: () => void
   handleCloseNewTransactionModal: () => void
-  handleOpenEditTransactionModal: () => void
+  handleOpenEditTransactionModal: ( id: number ) => void
   handleCloseEditTransactionModal: () => void
 }
 
@@ -19,6 +21,8 @@ export function TransactionModalProvider ( { children }: TransactionModalProps )
   const [isOpen, setIsOpen] = useState( false )
   const [isOpenEditModal, setIsOpenEditModal] = useState( false )
 
+  const { setIdToUpdate } = useTransactions()
+
   function handleOpenNewTransactionModal () {
     setIsOpen( true )
   }
@@ -27,8 +31,10 @@ export function TransactionModalProvider ( { children }: TransactionModalProps )
     setIsOpen( false )
   }
 
-  function handleOpenEditTransactionModal () {
+  function handleOpenEditTransactionModal ( id: number ) {
     setIsOpenEditModal( true )
+    setIdToUpdate( id )
+    return
   }
 
   function handleCloseEditTransactionModal () {
