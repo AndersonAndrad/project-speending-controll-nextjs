@@ -26,9 +26,9 @@ Because I needed some way I control my transactions, I create a spreadsheet in E
 
 See a little about this project...
 
-![]()
+<img src="https://raw.githubusercontent.com/AndersonAndrad/project-speending-controll-nextjs/main/images/main.png">
 
-![]()
+<img src="https://raw.githubusercontent.com/AndersonAndrad/project-speending-controll-nextjs/main/images/new-transaction.png">
 
 -----
 
