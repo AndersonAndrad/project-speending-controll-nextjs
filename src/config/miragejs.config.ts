@@ -67,16 +67,6 @@ export function makeServer () {
           return [
             faker.random.number( 1000000 ),
             faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 ),
-            faker.random.number( 1000000 )
           ]
         },
       } ),
